@@ -27,6 +27,13 @@
       <button id="speak">Speak</button>
 
     </div>
+    <!-- <textarea id="text-input"></textarea>
+<br>
+<select id="voice-select"></select>
+<br>
+<button id="start-button">Start</button>
+<button id="stop-button">Stop</button> -->
+
 
 <script>
   const msg = new SpeechSynthesisUtterance();
@@ -37,6 +44,54 @@
   const stopButton = document.querySelector('#stop');
 
   //Your code goes here
+    // get references to the elements we will be working with
+    const textInput = document.getElementById('text-input');
+    const voiceSelect = document.getElementById('voice-select');
+    const startButton = document.getElementById('start-button');
+    const StopButton = document.getElementById('stop-button');
+
+    // array to store available voices
+   
+
+    // function to populate the voice select element with available voices
+    function populateVoices() {
+        voices = speechSynthesis.getVoices();
+        voiceSelect.innerHTML = voices
+            .map(voice => `<option value="${voice.name}">${voice.name} (${voice.lang})</option>`)
+            .join('');
+    }
+
+    // function to start speaking
+    function startSpeaking() {
+        // get the selected voice and text to speak
+        const selectedVoice = voiceSelect.value;
+        const text = textInput.value;
+
+        // create a new utterance with the selected voice and text
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.voice = voices.find(voice => voice.name === selectedVoice);
+
+        // start speaking
+        speechSynthesis.speak(utterance);
+    }
+
+    // function to stop speaking
+    function stopSpeaking() {
+        speechSynthesis.cancel();
+    }
+
+    // populate the voice select element with available voices
+    populateVoices();
+
+    // listen for changes to the selected voice
+    voiceSelect.addEventListener('change', startSpeaking);
+
+    // listen for clicks on the start and stop buttons
+    StartButton.addEventListener('click', startSpeaking);
+    StopButton.addEventListener('click', stopSpeaking);
+
+    // listen for voices to be loaded
+    speechSynthesis.addEventListener('voiceschanged', populateVoices);
 </script>
 
 </body>
